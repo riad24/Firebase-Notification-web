@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\PostNotifaction;
 
@@ -29,43 +30,42 @@ class NotificationController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'title' => 'required|max:255',
-            'description' => 'required',
-        ]);
-
-        $input = array_except($request->all(),array('_token'));
          $post = new PostNotifaction;
-         $post->AddData($input);
+         $post->title =$request->get('title');
+         $post->description =$request->get('description');
+         $post->save();
+        $users = User::all();
 
+        if($post){
+             foreach ($users as $key => $value) {
+                 $this->notification($value->firebase_token, $request->get('title'),$request->get('description'));
+             }
+         }
 
-
-        \Session::put('success','Post send notification successfully!!');
-
-        return redirect()->route('post.index');
+        return redirect()->route('home');
     }
 
-    public function notification($token, $title)
+    public function notification($token, $title,$description)
     {
         $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
         $token=$token;
 
         $notification = [
             'title' => $title,
+            'text'=> $description,
             'sound' => true,
         ];
 
         $extraNotificationData = ["message" => $notification,"moredata" =>'dd'];
 
         $fcmNotification = [
-            //'registration_ids' => $tokenList, //multple token array
             'to'        => $token, //single token
             'notification' => $notification,
             'data' => $extraNotificationData
         ];
 
         $headers = [
-            'Authorization: key=Legacy server key',
+            'Authorization: key=AAAAW0Ispeg:APA91bHbcZRc_mbzDwy1-rrqvUMJckL58hAYe8erEaA_JqCiFpCa8sJMn0csQpuVztmoqLLSgsVg-KAjjzFjOuXKfhsuBNw8ccxLPbxf8T2wTA9DVkU1tXpOQB-AJSyO4F9gtgVfeWsb',
             'Content-Type: application/json'
         ];
 

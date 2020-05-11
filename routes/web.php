@@ -19,5 +19,5 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::resource('post', 'NotificationController');
 Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/post/notification', 'NotificationController@store')->name('post');
