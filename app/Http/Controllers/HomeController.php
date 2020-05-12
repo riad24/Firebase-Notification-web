@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\PostNotifaction;
+use App\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -25,6 +26,8 @@ class HomeController extends Controller
     public function index()
     {
         $posts = PostNotifaction::all();
-        return view('home',compact('posts'));
+        $users = User::all();
+
+        return view('home',compact('posts','users'));
     }
 }

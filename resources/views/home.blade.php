@@ -35,7 +35,23 @@
                                     </span>
                                     @enderror
                                 </div>
+                                <div class="form-group {{ $errors->has('user_id') ? 'has-error' : '' }}">
+                                    <label for="user_id" class="control-label">User
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select name="user_id" id="area" class="form-control {{ $errors->has('user_id') ? ' is-invalid' : '' }}">
+                                        <option value="">--- Select an user ---</option>
+                                        @foreach($users as $user)
+                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
 
+                                    @error('user_id')
+                                    <span class="text-danger">
+                                    {{ $message }}
+                                </span>
+                                    @enderror
+                                </div>
                                 <div class="form-group  mb-0">
                                     <div >
                                         <button type="submit" class="btn btn-primary">
